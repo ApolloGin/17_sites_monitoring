@@ -23,22 +23,14 @@ def extract_domain_name(url):
     return parsed_uri.netloc
 
 if __name__ == '__main__':
-    for url in load_urls4check('../checking_urls.txt'):
-        print(url)
-        if is_server_respond_with_200(url):
-            print(' - response OK')
-        else:
-            print(' - response Error')
+    for url in load_urls4check(input('Enter path to the file with urls:')):
         domain_name = extract_domain_name(url)
         expiration = get_domain_expiration_date(domain_name)
         td_month = datetime.timedelta(days=30)
         future_day = datetime.date.today() + td_month
-        if future_day <= expiration.date():
-            print(' - domain paid at least 30 days ({0})'.format(
-                expiration.strftime('%Y-%m-%d')
-            ))
+        
+        if (is_server_respond_with_200(url)
+                and future_day <= expiration.date()):
+            print('{0} - {1}'.format(url, 'OK'))
         else:
-            print(' - must be paid before {0}'.format(
-                expiration.strftime('%Y-%m-%d')
-            ))
-        print()
+            print('{0} - {1}'.format(url, 'NOT OK'))
